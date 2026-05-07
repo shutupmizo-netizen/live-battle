@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Live Battle Pro</title>
+  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTGl2ZSBCYXR0bGUgUHJvIiwic2hvcnRfbmFtZSI6IkJhdHRsZSIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMDAwMDAwIiwidGhlbWVfY29sb3IiOiIjZGMxNjI2IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDwlM0NzdmclMjB4bWxucyUzRCUyMmh0dHAlM0ElMkYlMkZ3d3cudzMub3JnJTJGMjAwMCUyRnN2ZyUyMiUyMHZpZXdCb3glM0QlMjIwJTIwMCUyMDEwMCUyMiUzRSUzQ3RleHQlMjB5JTNEJTIyLjllbSUyMiUyMGZvbnQtc2l6ZSUzRCUyMjkwJTIyJTNFJUUyJUE0JUEyJTNDJTJGdGV4dCUzRSUzQyUyRnN2ZyUzRSIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZSUvc3ZnK3htbCJ9XX0=">
+  <meta name="theme-color" content="#dc2626">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Battle">
+  <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.2.js"></script>
+  <style>
+    * { margin: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, sans-serif; height: 100vh; overflow: hidden; }
+    input { width: 100%; max-width: 300px; background: #1f2937; padding: 14px; border-radius: 8px; margin-bottom: 12px; text-align: center; border: none; color: #fff; font-size: 16px; }
+    button { border: none; color: #fff; font-weight: bold; border-radius: 8px; font-size: 16px; cursor: pointer; }
+    button:active { transform: scale(0.97); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+ .login-btn { width: 100%; max-width: 300px; padding: 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+ .hide { display: none!important; }
+ .vs-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fbbf24; color: #000; font-size: 24px; font-weight: 900; padding: 8px 16px; border-radius: 9999px; z-index: 10; box-shadow: 0 0 20px rgba(251,191,36,0.5); }
+  </style>
+</head>
+<body>
+  <div id="login-screen" style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+    <h1 style="font-size:40px;margin-bottom:8px;">🔥 Live Battle</h1>
+    <p style="color:#9ca3af;margin-bottom:32px;">Host 2 in bei rawh u</p>
+    <button onclick="loginGoogle()" class="login-btn" style="background:#fff;color:#000;">
+      <img src="https://www.google.com/favicon.ico" style="width:20px;height:20px;"> Google hmangin lut rawh
+    </button>
+    <p style="margin:24px 0;color:#6b7280;">OR</p>
+    <button onclick="loginGuest()" class="login-btn" style="background:#374151;">
+      👤 Guest angin lut mai
+    </button>
+  </div>
+  <div id="join-screen" class="hide" style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+    <img id="user-photo" src="" style="width:80px;height:80px;border-radius:9999px;margin-bottom:12px;object-fit:cover;background:#374151;">
+    <h2 id="user-name" style="font-size:24px;margin-bottom:24px;">Welcome</h2>
+    <input id="room-input" type="text" placeholder="Room Name" value="battle1">
+    <p id="room-status" style="color:#fbbf24;font-size:14px;margin-bottom:12px;height:20px;"></p>
+    <div style="display:flex;gap:16px;margin-top:8px;">
+      <button id="host-btn" onclick="joinBattle('host')" style="background:#dc2626;padding:12px 32px;">HOST</button>
+      <button onclick="joinBattle('audience')" style="background:#2563eb;padding:12px 32px;">EN TU</button>
+    </div>
+    <button onclick="logout()" style="background:#374151;padding:10px 24px;margin-top:32px;font-size:14px;">Logout</button>
+  </div>
+  <div id="battle-screen" class="hide" style="height:100vh;display:flex;flex-direction:column;">
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;position:relative;">
+      <div class="vs-badge">VS</div>
+      <div style="position:relative;background:#111;border-radius:8px;overflow:hidden;">
+        <div id="player1-video" style="width:100%;height:100%;"></div>
+        <div id="player1-offline" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:48px;background:#111;">🎮</div>
+        <div style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.7);padding:4px 12px;border-radius:9999px;font-size:14px;"><span id="player1-name">Waiting...</span></div>
+        <div style="position:absolute;top:8px;right:8px;background:#dc2626;padding:4px 12px;border-radius:9999px;font-size:14px;font-weight:bold;"><span id="votes1">0</span> ❤️</div>
+      </div>
+      <div style="position:relative;background:#111;border-radius:8px;overflow:hidden;">
+        <div id="player2-video" style="width:100%;height:100%;"></div>
+        <div id="player2-offline" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:48px;background:#111;">🎮</div>
+        <div style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.7);padding:4px 12px;border-radius:9999px;font-size:14px;"><span id="player2-name">Waiting...</span></div>
+        <div style="position:absolute;top:8px;right:8px;background:#2563eb;padding:4px 12px;border-radius:9999px;font-size:14px;font-weight:bold;"><span id="votes2">0</span> ❤️</div>
+      </div>
+    <div id="vote-area" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px;">
+      <button onclick="vote(1)" style="background:#dc2626;padding:16px;font-size:18px;">VOTE PLAYER 1</button>
+      <button onclick="vote(2)" style="background:#2563eb;padding:16px;font-size:18px;">VOTE PLAYER 2</button>
+    </div>
+    <div style="height:180px;background:#111;margin:0 8px 8px;border-radius:8px;display:flex;flex-direction:column;">
+      <div style="padding:6px 12px;border-bottom:1px solid #222;font-size:12px;color:#9ca3af;">💬 Live Chat • <span id="viewer-count">0</span> viewers</div>
+      <div id="chat-box" style="flex:1;padding:8px;overflow-y:auto;font-size:14px;"></div>
+      <div style="display:flex;padding:8px;gap:8px;">
+        <input id="chat-input" type="text" placeholder="Chat..." style="flex:1;margin:0;font-size:14px;padding:8px;">
+        <button onclick="sendChat()" style="background:#16a34a;padding:8px 16px;font-size:14px;">SEND</button>
+      </div>
+    <button onclick="leaveBattle()" style="background:#374151;margin:0 8px 8px;padding:10px;font-size:14px;">EXIT BATTLE</button>
+  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getDatabase, ref, set, onValue, push, remove, increment, onDisconnect, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  const firebaseConfig = { apiKey: "AIzaSyDiZzaR-rJjIyRLSGdCl2CETJqYxCxf7w", authDomain: "live-battle-77e08.firebaseapp.com", databaseURL: "https://live-battle-77e08-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "live-battle-77e08", storageBucket: "live-battle-77e08.firebasestorage.app", messagingSenderId: "457472203513", appId: "1:457472203513:web:30b5f835272a17419be028" };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+  const AGORA_APP_ID = "0ec0132b88da438fbc88eed5dac3efa9";
+  const client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+  let localTracks = [], myRole = "", myName = "", myPhoto = "", roomName = "", myUID = 0, isGuest = false, myPlayerSlot = 0;
+  let remoteUsers = {};
+  getRedirectResult(auth).catch((e) => { console.log(e); });
+  onAuthStateChanged(auth, (user) => {
+    if (user &&!isGuest) {
+      myName = user.displayName || "User";
+      myPhoto = user.photoURL || "";
+      myUID = user.uid.hashCode();
+      document.getElementById('user-name').innerText = myName;
+      document.getElementById('user-photo').src = myPhoto || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="%23374151"/><text x="50%" y="50%" fill="white" font-size="32" text-anchor="middle" dy=".3em">👤</text></svg>';
+      showScreen('join-screen');
+      checkRoomStatus();
+    } else if (!isGuest) {
+      showScreen('login-screen');
+    }
+  });
+  String.prototype.hashCode = function() { let hash = 0; for (let i = 0; i < this.length; i++) { hash = ((hash << 5) - hash) + this.charCodeAt(i); hash = hash & hash; } return Math.abs(hash); }
+  function showScreen(id) { ['login-screen','join-screen','battle-screen'].forEach(s => { document.getElementById(s).classList.add('hide'); }); document.getElementById(id).classList.remove('hide'); if(id === 'battle-screen') document.getElementById(id).style.display = 'flex'; }
+  async function checkRoomStatus() { const room = document.getElementById('room-input').value || "battle1"; const p1Snap = await get(ref(db, `rooms/${room}/player1`)); const p2Snap = await get(ref(db, `rooms/${room}/player2`)); const status = document.getElementById('room-status'); const hostBtn = document.getElementById('host-btn'); if (p1Snap.exists() && p2Snap.exists()) { status.innerText = "Host 2 full. En tu angin lut rawh"; hostBtn.disabled = true; } else if (p1Snap.exists() || p2Snap.exists()) { status.innerText = "Host 1 a awm. Host 2 i ni thei"; hostBtn.disabled = false; } else { status.innerText = "Room a ruak. Host 1 i ni ang"; hostBtn.disabled = false; } }
+  document.getElementById('room-input').addEventListener('input', checkRoomStatus);
+  window.loginGoogle = async () => { const provider = new GoogleAuthProvider(); await signInWithRedirect(auth, provider); }
+  window.loginGuest = () => { isGuest = true; myName = "Guest" + Math.floor(Math.random()*1000); myPhoto = ""; myUID = Math.floor(Math.random() * 100000); document.getElementById('user-name').innerText = myName; document.getElementById('user-photo').src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="%23374151"/><text x="50%" y="50%" fill="white" font-size="32" text-anchor="middle" dy=".3em">👤</text></svg>'; showScreen('join-screen'); checkRoomStatus(); }
+  window.logout = () => { isGuest = false; signOut(auth); }
+  window.joinBattle = async (role) => { myRole = role; roomName = document.getElementById('room-input').value || "battle1"; if (!roomName) return alert("Room name dah rawh"); showScreen('battle-screen'); await client.setClientRole(role === 'host'? 'host' : 'audience'); await client.join(AGORA_APP_ID, roomName, null, myUID); const viewerRef = ref(db, `rooms/${roomName}/viewers/${myUID}`); set(viewerRef, true); onDisconnect(viewerRef).remove(); if (role === 'host') { const p1Snap = await get(ref(db, `rooms/${roomName}/player1`)); const p2Snap = await get(ref(db, `rooms/${roomName}/player2`)); if (!p1Snap.exists()) { myPlayerSlot = 1; } else if (!p2Snap.exists()) { myPlayerSlot = 2; } else { alert("Host a full tawh"); leaveBattle(); return; } localTracks = await AgoraRTC.createMicrophoneAndCameraTracks(); await client.publish(localTracks); localTracks[1].play(`player${myPlayerSlot}-video`); document.getElementById(`player${myPlayerSlot}-offline`).classList.add('hide'); document.getElementById(`player${myPlayerSlot}-name`).innerText = myName; const playerRef = ref(db, `rooms/${roomName}/player${myPlayerSlot}`); set(playerRef, { name: myName, uid: myUID, photo: myPhoto }); onDisconnect(playerRef).remove(); document.getElementById('vote-area').style.display = 'none'; } client.on("user-published", handleUserJoined); client.on("user-left", handleUserLeft); onValue(ref(db, `rooms/${roomName}/votes`), (snap) => { const v = snap.val() || { p1: 0, p2: 0 }; document.getElementById('votes1').innerText = v.p1 || 0; document.getElementById('votes2').innerText = v.p2 || 0; }); onValue(ref(db, `rooms/${roomName}/player1`), (snap) => { const p1 = snap.val(); if (p1) { document.getElementById('player1-name').innerText = p1.name; document.getElementById('player1-offline').classList.add('hide'); } else { document.getElementById('player1-name').innerText = "Waiting..."; document.getElementById('player1-offline').classList.remove('hide'); } }); onValue(ref(db, `rooms/${roomName}/player2`), (snap) => { const p2 = snap.val(); if (p2) { document.getElementById('player2-name').innerText = p2.name; document.getElementById('player2-offline').classList.add('hide'); } else { document.getElementById('player2-name').innerText = "Waiting..."; document.getElementById('player2-offline').classList.remove('hide'); } }); onValue(ref(db, `rooms/${roomName}/viewers`), (snap) => { const count = snap.exists()? Object.keys(snap.val()).length : 0; document.getElementById('viewer-count').innerText = count; }); onValue(ref(db, `rooms/${roomName}/chat`), (snap) => { const chatBox = document.getElementById('chat-box'); chatBox.innerHTML = ''; snap.forEach((c) => { const m = c.val(); chatBox.innerHTML += `<div style="margin-bottom:4px;"><b style="color:#4ade80;">${m.name}:</b> ${m.text}</div>`; }); chatBox.scrollTop = chatBox.scrollHeight; }); }
+  async function handleUserJoined(user, mediaType) { await client.subscribe(user, mediaType); remoteUsers[user.uid] = user; const p1Snap = await get(ref(db, `rooms/${roomName}/player1`)); const p2Snap = await get(ref(db, `rooms/${roomName}/player2`)); let slot = 0; if (p1Snap.exists() && p1Snap.val().uid === user.uid) slot = 1; else if (p2Snap.exists() && p2Snap.val().uid === user.uid) slot = 2; if (slot > 0 && mediaType === 'video') { user.videoTrack.play(`player${slot}-video`); document.getElementById(`player${slot}-offline`).classList.add('hide'); } if (mediaType === 'audio') { user.audioTrack.play(); } }
+  function handleUserLeft(user) { delete remoteUsers[user.uid]; }
+  window.vote = (p) => { set(ref(db, `rooms/${roomName}/votes/p${p}`), increment(1)); }
+  window.sendChat = () => { const i = document.getElementById('chat-input'); const t = i.value.trim(); if (!t) return; push(ref(db, `rooms/${roomName}/chat`), { name: myName, text: t }); i.value = ''; }
+  window.leaveBattle = async () => { localTracks.forEach(t => t.close()); await client.leave(); if(myRole === 'host' && myPlayerSlot > 0) { remove(ref(db, `rooms/${roomName}/player${myPlayerSlot}`)); } remove(ref(db, `rooms/${roomName}/viewers/${myUID}`)); location.reload(); }
+  document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendChat(); });
+</script>
+</body>
+</html>
