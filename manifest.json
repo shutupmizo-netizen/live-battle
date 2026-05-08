@@ -4,9 +4,7 @@
   "description": "Mizo Live Battle Game - Online inbeihna platform",
   "start_url": "/Live-battle/",
   "display": "standalone",
-  "background_color": "#111827",
   "theme_color": "#f47155",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "https://placehold.co/192x192/f47155/ffffff.png?text=LB",
@@ -15,7 +13,7 @@
     },
     {
       "src": "https://placehold.co/512x512/f47155/ffffff.png?text=LB",
-      "sizes": "512x512",
+      "sizes": "512x512", 
       "type": "image/png"
     }
   ]
