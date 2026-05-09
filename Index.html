@@ -1,250 +1,2407 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔥 Live Battle</title>
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-
-<!-- Manifest dik tak -->
-<link rel="manifest" href="manifest.json">
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
-body{background:#111827;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.container{width:100%;max-width:1200px;background:#1f2937;border-radius:20px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-h1{text-align:center;color:#f47155;font-size:2.5rem;margin-bottom:20px}
-.view{display:none}.view.active{display:block}
-input,button{width:100%;padding:14px;border-radius:10px;border:none;font-size:1rem;margin:8px 0}
-input{background:#374151;color:#fff;border:2px solid #4b5563}
-button{background:#f47155;color:#fff;font-weight:bold;cursor:pointer}
-button:hover{background:#e55a3d}
-button.secondary{background:#374151}
-.video-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
-.video-box{background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9;position:relative}
-.video-box video{width:100%;height:100%;object-fit:cover}
-.label{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.7);padding:6px 12px;border-radius:6px;font-weight:bold}
-.gift-bar{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
-.gift-btn{flex:1;min-width:80px;background:#374151;padding:12px;border-radius:10px;cursor:pointer;text-align:center}
-.gift-btn:hover{background:#4b5563}
-.scores{display:flex;justify-content:space-around;text-align:center;margin:20px 0}
-.score-box h3{color:#f47155;font-size:2rem}
-.share-box{background:#374151;padding:16px;border-radius:10px;margin:16px 0;text-align:center}
-#shareLink{word-break:break-all;color:#f47155;font-weight:bold}
-.host-controls{display:flex;gap:10px;margin-top:16px}
-@media(max-width:768px){.video-grid{grid-template-columns:1fr}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Battle Mizo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      color: white;
+    }
+  .container {
+      background: rgba(0,0,0,0.6);
+      padding: 15px;
+      border-radius: 15px;
+      width: 98%;
+      max-width: 600px;
+      margin: 10px auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+    }
+    h1 { text-align: center; margin-bottom: 10px; color: #00ff88; font-size: 22px; }
+    h2 { margin: 12px 0 8px; color: #00ff88; font-size: 15px; }
+    h3 { margin: 8px 0; color: #00ff88; font-size: 13px; }
+    input, select, textarea {
+      width: 100%;
+      padding: 9px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 13px;
+    }
+    input::placeholder, textarea::placeholder { color: #aaa; }
+    select option { background: #1a1a2e; color: white; }
+    button {
+      width: 100%;
+      padding: 9px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 6px;
+      background: #00ff88;
+      color: #000;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #00cc6a; transform: scale(1.02); }
+    button:disabled { background: #555; cursor: not-allowed; }
+    button.small { width: auto; padding: 5px 10px; font-size: 11px; margin: 2px; }
+ .google-btn { background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 6px; }
+ .google-btn:hover { background: #f1f1f1; }
+ .store-btn {
+      background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+      margin: 3px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+ .store-btn:hover { background: linear-gradient(45deg, #ff5252, #ff7a3d); }
+ .best-deal { border: 2px solid #ffd700; }
+ .logout-btn { background: #ff4757; margin-top: 10px; }
+ .follow-btn { background: #1e90ff; }
+ .unfollow-btn { background: #ff6b6b; }
+ .edit-btn { background: #ffa500; }
+ .chat-btn { background: #9b59b6; }
+ .vote-btn { background: #ffd700; color: #000; font-size: 16px; padding: 12px; }
+ .profile-card {
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+ .profile-row { display: flex; justify-content: space-between; margin: 5px 0; font-size: 12px; }
+ .badge { background: #00ff88; color: #000; padding: 1px 5px; border-radius: 20px; font-size: 10px; }
+ .badge-hot { background: #ffd700; color: #000; }
+    #recaptcha-container, #recaptcha-container-signup { margin: 8px 0; }
+ .hidden { display: none; }
+ .coin-balance { font-size: 18px; color: #ffd700; text-align: center; margin: 6px 0; }
+ .tab-switch {
+      display: flex;
+      margin-bottom: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 3px;
+    }
+ .tab-btn {
+      flex: 1;
+      padding: 7px;
+      background: transparent;
+      border: none;
+      color: #aaa;
+      margin: 0;
+      font-size: 12px;
+    }
+ .tab-btn.active {
+      background: #00ff88;
+      color: #000;
+      border-radius: 5px;
+    }
+ .photo-preview {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 6px auto;
+      display: block;
+      border: 2px solid #00ff88;
+    }
+ .file-input-label {
+      display: block;
+      text-align: center;
+      padding: 7px;
+      background: rgba(0,255,136,0.2);
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px 0;
+      font-size: 12px;
+    }
+ .divider {
+      text-align: center;
+      margin: 10px 0;
+      color: #aaa;
+      position: relative;
+      font-size: 11px;
+    }
+ .divider::before,.divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #444;
+    }
+ .divider::before { left: 0; }
+ .divider::after { right: 0; }
+ .terms-check {
+      display: flex;
+      align-items: start;
+      gap: 5px;
+      margin: 6px 0;
+      font-size: 11px;
+    }
+ .terms-check input[type="checkbox"] {
+      width: auto;
+      margin: 2px 0 0 0;
+      cursor: pointer;
+    }
+ .terms-check label {
+      flex: 1;
+      cursor: pointer;
+    }
+ .terms-link {
+      color: #00ff88;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+ .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 10px;
+    }
+ .modal-content {
+      background: #1a1a2e;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      width: 100%;
+    }
+ .modal-close {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #ff6b6b;
+    }
+ .modal h3 { color: #00ff88; margin-bottom: 10px; font-size: 16px; }
+ .modal p { margin: 6px 0; line-height: 1.4; font-size: 12px; }
+ .nav-tabs {
+      display: flex;
+      gap: 4px;
+      margin: 8px 0;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+ .nav-tab {
+      padding: 5px 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 5px;
+      font-size: 11px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+ .nav-tab.active { background: #00ff88; color: #000; }
+ .user-list {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+ .user-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      margin: 4px 0;
+    }
+ .user-item img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+ .user-info { flex: 1; font-size: 12px; }
+ .user-info.name { font-weight: bold; }
+ .user-info.meta { font-size: 10px; color: #aaa; }
+ .chat-box {
+      height: 200px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      padding: 8px;
+      margin: 8px 0;
+    }
+ .chat-msg {
+      margin: 6px 0;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 12px;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+ .chat-msg.me {
+      background: #00ff88;
+      color: #000;
+      margin-left: auto;
+      text-align: right;
+    }
+ .chat-msg.other {
+      background: rgba(255,255,255,0.1);
+    }
+ .chat-input-group {
+      display: flex;
+      gap: 4px;
+    }
+ .chat-input-group input { flex: 1; margin: 0; }
+ .chat-input-group button { width: auto; margin: 0; padding: 9px 12px; }
+ .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      margin: 4px 0;
+      font-size: 12px;
+    }
+ .rank {
+      font-size: 16px;
+      font-weight: bold;
+      width: 25px;
+      text-align: center;
+    }
+ .rank-1 { color: #ffd700; }
+ .rank-2 { color: #c0c0c0; }
+ .rank-3 { color: #cd7f32; }
+ .search-box {
+      margin: 8px 0;
+    }
+ .battle-container {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0;
+    }
+ .battle-box {
+      flex: 1;
+      background: #000;
+      border-radius: 8px;
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+ .battle-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+ .battle-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 8px;
+      font-size: 11px;
+    }
+ .battle-votes {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255,215,0,0.9);
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+ .game-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+ .game-card {
+      background: rgba(255,255,255,0.1);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+ .game-card:hover { background: rgba(255,255,255,0.2); }
+ .game-icon { font-size: 32px; margin-bottom: 5px; }
+ .game-name { font-size: 12px; font-weight: bold; }
+ .voter-popup {
+      position: absolute;
+      background: #1a1a2e;
+      border: 2px solid #00ff88;
+      border-radius: 8px;
+      padding: 8px;
+      z-index: 100;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: popIn 0.3s;
+    }
+ @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+ .voter-popup img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>🔥 LIVE BATTLE</h1>
 
-    <!-- Login View -->
-    <div id="loginView" class="view active">
-        <input type="text" id="usernameInput" placeholder="I hming dah rawh">
-        <button id="guestBtn">Guest angin lut mai</button>
+  <!-- LOGIN/SIGNUP BOX -->
+  <div class="container" id="loginBox">
+    <h1>🔥 Live Battle 🔥</h1>
+
+    <div class="tab-switch">
+      <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">Login</button>
+      <button class="tab-btn" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
     </div>
 
-    <!-- Lobby View -->
-    <div id="lobbyView" class="view">
-        <h2 style="text-align:center;margin-bottom:20px">Welcome, <span id="displayName"></span>!</h2>
-        <button id="createRoomBtn">HOST - Battle siam rawh</button>
-        <input type="text" id="joinCodeInput" placeholder="Room Code dah la" style="margin-top:16px">
-        <button id="joinRoomBtn" class="secondary">Join Battle</button>
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <p style="text-align:center; margin-bottom:12px; font-size:12px;">Phone hmangin lut rawh</p>
+      <input type="tel" id="loginPhone" placeholder="+91 9876543210" value="+91">
+      <div id="recaptcha-container"></div>
+      <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+
+      <div id="otpBox" class="hidden">
+        <input type="text" id="otpCode" placeholder="123456" maxlength="6">
+        <button onclick="verifyOTP()">Verify OTP</button>
+      </div>
+
+      <div class="divider">OR</div>
+      <button class="google-btn" onclick="googleLogin()">
+        <svg width="14" height="14" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 0 0 1 4.48-3.3z"/></svg>
+        Google hmangin Login
+      </button>
     </div>
 
-    <!-- Host View -->
-    <div id="hostView" class="view">
-        <div class="share-box">
-            <p>Room Code: <b id="roomCodeText"></b></p>
-            <p style="font-size:0.9rem;margin-top:8px">He link hi i thiante share rawh:</p>
-            <p id="shareLink"></p>
-            <button id="copyLinkBtn" style="margin-top:10px">Link Copy</button>
-        </div>
-        <div class="video-grid">
-            <div class="video-box">
-                <video id="hostVideo" autoplay playsinline muted></video>
-                <div class="label">HOST: <span id="hostName"></span></div>
-            </div>
-            <div class="video-box">
-                <video id="guestVideo" autoplay playsinline></video>
-                <div class="label">GUEST: <span id="guestName">Waiting...</span></div>
-            </div>
-        </div>
-        <div class="scores">
-            <div class="score-box"><h3 id="hostScore">0</h3><p>HOST</p></div>
-            <div class="score-box"><h3 id="guestScore">0</h3><p>GUEST</p></div>
-        </div>
-        <div class="host-controls">
-            <button id="endBattleBtn" class="secondary">Battle Tihtawp</button>
-        </div>
+    <!-- SIGN UP FORM -->
+    <div id="signupForm" class="hidden">
+      <p style="text-align:center; margin-bottom:12px; font-size:12px;">Account thar siam rawh</p>
+
+      <img id="photoPreview" class="photo-preview hidden" src="">
+      <label for="signupPhoto" class="file-input-label">📷 Profile Photo Thlang</label>
+      <input type="file" id="signupPhoto" accept="image/*" class="hidden" onchange="previewPhoto(event)">
+
+      <input type="text" id="signupName" placeholder="I hming pum">
+      <input type="date" id="signupDob" placeholder="Pian Ni">
+      <select id="signupGender">
+        <option value="">Gender thlang rawh</option>
+        <option value="Male">Mipa</option>
+        <option value="Female">Hmeichhia</option>
+        <option value="Other">Sawi duh lo</option>
+      </select>
+      <input type="tel" id="signupPhone" placeholder="+91 9876543210" value="+91">
+
+      <div class="terms-check">
+        <input type="checkbox" id="termsCheck">
+        <label for="termsCheck">
+          <span class="terms-link" onclick="showTerms()">Terms & Conditions</span> ka pawm e
+        </label>
+      </div>
+
+      <div id="recaptcha-container-signup"></div>
+      <button id="signupOtpBtn" onclick="sendSignupOTP()">Send OTP</button>
+
+      <div id="signupOtpBox" class="hidden">
+        <input type="text" id="signupOtpCode" placeholder="123456" maxlength="6">
+        <button onclick="verifySignupOTP()">Verify & Create Account</button>
+      </div>
+
+      <div class="divider">OR</div>
+      <button class="google-btn" onclick="googleSignup()">
+        <svg width="14" height="14" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 0 0 1 4.48-3.3z"/></svg>
+        Google hmangin Sign Up
+      </button>
     </div>
 
-    <!-- Guest View -->
-    <div id="guestView" class="view">
-        <div class="video-grid">
-            <div class="video-box">
-                <video id="guestHostVideo" autoplay playsinline></video>
-                <div class="label">HOST: <span id="guestHostName"></span></div>
-            </div>
-            <div class="video-box">
-                <video id="guestSelfVideo" autoplay playsinline muted></video>
-                <div class="label">NANGMAH: <span id="guestSelfName"></span></div>
-            </div>
-        </div>
-        <div class="scores">
-            <div class="score-box"><h3 id="guestHostScore">0</h3><p>HOST</p></div>
-            <div class="score-box"><h3 id="guestSelfScore">0</h3><p>NANGMAH</p></div>
-        </div>
-        <div class="gift-bar">
-            <div class="gift-btn" data-value="1">🌹<br>Rose<br>1</div>
-            <div class="gift-btn" data-value="10">🍭<br>Lollipop<br>10</div>
-            <div class="gift-btn" data-value="50">🚀<br>Rocket<br>50</div>
-            <div class="gift-btn" data-value="100">💎<br>Diamond<br>100</div>
-        </div>
+    <p id="errorMsg" style="color:#ff6b6b; text-align:center; margin-top:8px; font-size:11px;"></p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="container hidden" id="dashboard">
+    <h1>🔥 Live Battle 🔥</h1>
+
+    <!-- NAV TABS -->
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showSection('home')">Home</div>
+      <div class="nav-tab" onclick="showSection('battle')">Battle</div>
+      <div class="nav-tab" onclick="showSection('games')">Games</div>
+      <div class="nav-tab" onclick="showSection('users')">Users</div>
+      <div class="nav-tab" onclick="showSection('chat')">Chat</div>
+      <div class="nav-tab" onclick="showSection('leaderboard')">Top</div>
+      <div class="nav-tab" onclick="showSection('profile')">Profile</div>
     </div>
-</div>
 
-<script>
-const PEER_CONFIG = { host: '0.peerjs.com', port: 443, secure: true };
-let peer, currentUser, currentRoomId, isHost = false;
-let localStream, hostConnection, guestConnection;
-let scores = { host: 0, guest: 0 };
+    <!-- HOME SECTION -->
+    <div id="homeSection">
+      <img id="userPhoto" class="photo-preview" src="">
 
-const views = {
-    login: document.getElementById('loginView'),
-    lobby: document.getElementById('lobbyView'),
-    host: document.getElementById('hostView'),
-    guest: document.getElementById('guestView')
-};
+      <div class="coin-balance">
+        🪙 <span id="userCoins">0</span> Coins
+      </div>
 
-function showView(name) {
-    Object.values(views).forEach(v => v.classList.remove('active'));
-    views[name].classList.add('active');
-}
+      <div class="profile-card">
+        <div class="profile-row">
+          <span><b>Hming:</b></span>
+          <span id="userName">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Followers:</b></span>
+          <span><span id="userFollowers">0</span></span>
+        </div>
+        <div class="profile-row">
+          <span><b>Following:</b></span>
+          <span id="userFollowing">0</span>
+        </div>
+      </div>
 
-function init() {
-    document.getElementById('guestBtn').onclick = guestLogin;
-    document.getElementById('createRoomBtn').onclick = createRoom;
-    document.getElementById('joinRoomBtn').onclick = () => joinRoom(document.getElementById('joinCodeInput').value);
-    document.getElementById('copyLinkBtn').onclick = copyLink;
-    document.getElementById('endBattleBtn').onclick = () => location.reload();
-    document.querySelectorAll('.gift-btn').forEach(btn => {
-        btn.onclick = () => sendGift(parseInt(btn.dataset.value));
-    });
-    checkUrlForRoom();
-}
+      <h2>💰 Coin Store</h2>
+      <button class="store-btn" onclick="buyCoins(70, 70)">
+        <span class="coins">70 Coins</span>
+        <span class="price">₹70 <span class="badge">Tlawm Ber</span></span>
+      </button>
+      <button class="store-btn" onclick="buyCoins(150, 160)">
+        <span class="coins">160 Coins</span>
+        <span class="price">₹150</span>
+      </button>
+      <button class="store-btn" onclick="buyCoins(300, 350)">
+        <span class="coins">350 Coins</span>
+        <span class="price">₹300</span>
+      </button>
+      <button class="store-btn best-deal" onclick="buyCoins(500, 600)">
+        <span class="coins">600 Coins</span>
+        <span class="price">₹500 <span class="badge badge-hot">HOT</span></span>
+      </button>
+      <button class="store-btn" onclick="buyCoins(1000, 1200)">
+        <span class="coins">1200 Coins</span>
+        <span class="price">₹1000 <span class="badge badge-hot">BEST</span></span>
+      </button>
 
-function guestLogin() {
-    const name = document.getElementById('usernameInput').value.trim() || `Guest${Math.floor(Math.random()*1000)}`;
-    currentUser = { name };
-    document.getElementById('displayName').textContent = name;
-    showView('lobby');
-}
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
 
-async function createRoom() {
-    isHost = true;
-    showView('host');
-    try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        document.getElementById('hostVideo').srcObject = localStream;
-    } catch(err) {
-        alert('Camera/Mic phalna pek a ngai: ' + err.message);
-        showView('lobby');
+    <!-- BATTLE SECTION -->
+    <div id="battleSection" class="hidden">
+      <h2>⚔️ Live Battle</h2>
+
+      <div class="battle-container">
+        <div class="battle-box" id="battleBox1">
+          <video class="battle-video" id="video1" autoplay muted></video>
+          <div class="battle-votes" id="votes1">0 Votes</div>
+          <div class="battle-info">
+            <div id="player1Name">Player 1</div>
+            <button class="vote-btn small" onclick="votePlayer(1)">Vote (10🪙)</button>
+          </div>
+        </div>
+
+        <div class="battle-box" id="battleBox2">
+          <video class="battle-video" id="video2" autoplay muted></video>
+          <div class="battle-votes" id="votes2">0 Votes</div>
+          <div class="battle-info">
+            <div id="player2Name">Player 2</div>
+            <button class="vote-btn small" onclick="votePlayer(2)">Vote (10🪙)</button>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="startBattle()">🎮 Battle Tan</button>
+      <button onclick="joinBattle()">📹 Battle Join</button>
+
+      <h3>💬 Live Chat</h3>
+      <div id="battleChatBox" class="chat-box"></div>
+      <div class="chat-input-group">
+        <input type="text" id="battleChatInput" placeholder="Chat..." onkeypress="if(event.key==='Enter') sendBattleChat()">
+        <button onclick="sendBattleChat()">Send</button>
+      </div>
+    </div>
+
+    <!-- GAMES SECTION -->
+    <div id="gamesSection" class="hidden">
+      <h2>🎮 Games</h2>
+      <div class="game-grid">
+        <div class="game-card" onclick="openGame('slot5x3')">
+          <div class="game-icon">🎰</div>
+          <div class="game-name">Slot 3x5<br>Animal</div>
+        </div>
+        <div class="game-card" onclick="openGame('slot3x3')">
+          <div class="game-icon">🎲</div>
+          <div class="game-name">Slot 3x3<br>Jackpot</div>
+        </div>
+        <div class="game-card" onclick="openGame('rummy')">
+          <div class="game-icon">🃏</div>
+          <div class="game-name">Rummy<br>8 Players</div>
+        </div>
+        <div class="game-card" onclick="openGame('ludo')">
+          <div class="game-icon">🎯</div>
+          <div class="game-name">Ludo<br>2-4 Players</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS SECTION -->
+    <div id="usersSection" class="hidden">
+      <h2>👥 Users</h2>
+      <input type="text" class="search-box" id="userSearch" placeholder="Hming zawn..." onkeyup="searchUsers()">
+      <div id="usersList" class="user-list"></div>
+    </div>
+
+    <!-- CHAT SECTION -->
+    <div id="chatSection" class="hidden">
+      <h2>💬 Private Chat</h2>
+      <div id="chatUserList" class="user-list"></div>
+      <div id="chatWindow" class="hidden">
+        <button class="small" onclick="closeChat()">← Kir</button>
+        <h3 id="chatWithName"></h3>
+        <div id="chatBox" class="chat-box"></div>
+        <div class="chat-input-group">
+          <input type="text" id="chatInput" placeholder="Message type rawh..." onkeypress="if(event.key==='Enter') sendMessage()">
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD SECTION -->
+    <div id="leaderboardSection" class="hidden">
+      <h2>🏆 Leaderboard</h2>
+      <div class="nav-tabs">
+        <div class="nav-tab active" onclick="loadLeaderboard('week')">1 Week</div>
+        <div class="nav-tab" onclick="loadLeaderboard('month')">30 Day</div>
+        <div class="nav-tab" onclick="loadLeaderboard('all')">All Time</div>
+      </div>
+      <div id="leaderboardList"></div>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div id="profileSection" class="hidden">
+      <h2>👤 Ka Profile</h2>
+      <img id="editPhotoPreview" class="photo-preview" src="">
+      <label for="editPhoto" class="file-input-label">📷 Thlalak Thlak</label>
+      <input type="file" id="editPhoto" accept="image/*" class="hidden" onchange="previewEditPhoto(event)">
+
+      <input type="text" id="editName" placeholder="Hming">
+      <input type="date" id="editDob" placeholder="Pian Ni">
+      <select id="editGender">
+        <option value="">Gender thlang rawh</option>
+        <option value="Male">Mipa</option>
+        <option value="Female">Hmeichhia</option>
+        <option value="Other">Sawi duh lo</option>
+      </select>
+      <textarea id="editBio" placeholder="Bio (chhiar tur)" rows="3"></textarea>
+      <button class="edit-btn" onclick="saveProfile()">Save Profile</button>
+
+      <div class="profile-card" style="margin-top:12px;">
+        <div class="profile-row">
+          <span><b>Phone:</b></span>
+          <span id="profilePhone">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Join:</b></span>
+          <span id="profileJoined">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TERMS MODAL -->
+  <div id="termsModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeTerms()">&times;</span>
+      <h3>Terms & Conditions / Hman Dan Tur</h3>
+
+      <h4 style="color:#00ff88;margin-top:12px;">🇬🇧 English</h4>
+      <p><b>1. Account:</b> You must be 13+ years old. Provide accurate information during signup.</p>
+      <p><b>2. Coins:</b> Coins are virtual currency for Live Battle. No real money refund. All purchases are final.</p>
+      <p><b>3. Conduct:</b> No harassment, hate speech, or illegal content. Violators will be banned.</p>
+      <p><b>4. Privacy:</b> We store your phone, name, DOB, gender, and photo for account purposes only.</p>
+      <p><b>5. Liability:</b> Use at your own risk. We are not liable for any losses.</p>
+
+      <h4 style="color:#00ff88;margin-top:15px;">🇲🇲 Mizo Tawng</h4>
+      <p><b>1. Account:</b> Kum 13 chin chung lam chauh an sign up thei. I information dik tak dah ang che.</p>
+      <p><b>2. Coins:</b> Coins hi Live Battle atan a ni. Pawisa tak pek kir theih loh. Lei tawh chu cancel theih loh.</p>
+      <p><b>3. Nungchang:</b> Midang tihduhdah, tawngkam mawi lo, dan bawhchhiatna a awm tur a ni lo. Ti tu chu ban a ni ang.</p>
+      <p><b>4. Privacy:</b> I phone, hming, pian ni, gender, thlalak te hi account atan chauh kan kawl.</p>
+      <p><b>5. Mawhphurhna:</b> I mawhphurhna a ni. Kan mawh a ni lo.</p>
+
+      <p style="margin-top:15px;text-align:center;"><b>By signing up, you agree / Sign up i tih chuan i pawm tihna a ni.</b></p>
+    </div>
+  </div>
+
+  <!-- USER PROFILE MODAL -->
+  <div id="userProfileModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeUserProfile()">&times;</span>
+      <img id="modalUserPhoto" class="photo-preview" src="">
+      <h3 id="modalUserName"></h3>
+      <div class="profile-card">
+        <div class="profile-row">
+          <span><b>Followers:</b></span>
+          <span id="modalUserFollowers">0</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Following:</b></span>
+          <span id="modalUserFollowing">0</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Coins:</b></span>
+          <span id="modalUserCoins">0</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Bio:</b></span>
+          <span id="modalUserBio">-</span>
+        </div>
+      </div>
+      <button id="followBtn" class="follow-btn" onclick="toggleFollow()">Follow</button>
+      <button class="chat-btn" onclick="openChatFromProfile()">Message</button>
+    </div>
+  </div>
+
+  <!-- GAME MODAL -->
+  <div id="gameModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeGame()">&times;</span>
+      <h3 id="gameTitle">Game</h3>
+      <div id="gameContent"></div>
+    </div>
+  </div>
+
+  <!-- FIREBASE + APP LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp, arrayUnion, arrayRemove, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    // 1. FIREBASE CONFIG - I TA NEN THLAK RAWH
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      authDomain: "live-battle-social.firebaseapp.com",
+      projectId: "live-battle-social",
+      storageBucket: "live-battle-social.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef123456"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    let confirmationResult = null;
+    let signupConfirmationResult = null;
+    let unsubscribeUser = null;
+    let tempSignupData = {};
+    let selectedPhotoFile = null;
+    let selectedEditPhotoFile = null;
+    let currentUser = null;
+    let currentChatUser = null;
+    let chatUnsubscribe = null;
+    let viewingUserId = null;
+    let battleUnsubscribe = null;
+
+   // 2. TAB SWITCH
+window.switchTab = (tab) => {
+  if (tab === 'login') {
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('signupForm').classList.add('hidden');
+    document.getElementById('loginTab').classList.add('active');
+    document.getElementById('signupTab').classList.remove('active');
+  } else {
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('signupForm').classList.remove('hidden');
+    document.getElementById('loginTab').classList.remove('active');
+    document.getElementById('signupTab').classList.add('active');
+    setupSignupRecaptcha();
+  }
+  document.getElementById('errorMsg').innerText = '';
+}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Battle Mizo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      color: white;
+    }
+  .container {
+      background: rgba(0,0,0,0.6);
+      padding: 15px;
+      border-radius: 15px;
+      width: 98%;
+      max-width: 700px;
+      margin: 10px auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+    }
+    h1 { text-align: center; margin-bottom: 10px; color: #00ff88; font-size: 22px; }
+    h2 { margin: 12px 0 8px; color: #00ff88; font-size: 15px; }
+    h3 { margin: 8px 0; color: #00ff88; font-size: 13px; }
+    input, select, textarea {
+      width: 100%;
+      padding: 9px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 13px;
+    }
+    input::placeholder, textarea::placeholder { color: #aaa; }
+    select option { background: #1a1a2e; color: white; }
+    button {
+      width: 100%;
+      padding: 9px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 6px;
+      background: #00ff88;
+      color: #000;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #00cc6a; transform: scale(1.02); }
+    button:disabled { background: #555; cursor: not-allowed; }
+    button.small { width: auto; padding: 5px 10px; font-size: 11px; margin: 2px; }
+ .google-btn { background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 6px; }
+ .google-btn:hover { background: #f1f1f1; }
+ .store-btn {
+      background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+      margin: 3px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+ .store-btn:hover { background: linear-gradient(45deg, #ff5252, #ff7a3d); }
+ .best-deal { border: 2px solid #ffd700; }
+ .logout-btn { background: #ff4757; margin-top: 10px; }
+ .follow-btn { background: #1e90ff; }
+ .unfollow-btn { background: #ff6b6b; }
+ .edit-btn { background: #ffa500; }
+ .chat-btn { background: #9b59b6; }
+ .vote-btn { background: #ffd700; color: #000; font-size: 16px; padding: 12px; }
+ .profile-card {
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+ .profile-row { display: flex; justify-content: space-between; margin: 5px 0; font-size: 12px; }
+ .badge { background: #00ff88; color: #000; padding: 1px 5px; border-radius: 20px; font-size: 10px; }
+ .badge-hot { background: #ffd700; color: #000; }
+    #recaptcha-container, #recaptcha-container-signup { margin: 8px 0; }
+ .hidden { display: none; }
+ .coin-balance { font-size: 18px; color: #ffd700; text-align: center; margin: 6px 0; }
+ .tab-switch {
+      display: flex;
+      margin-bottom: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 3px;
+    }
+ .tab-btn {
+      flex: 1;
+      padding: 7px;
+      background: transparent;
+      border: none;
+      color: #aaa;
+      margin: 0;
+      font-size: 12px;
+    }
+ .tab-btn.active {
+      background: #00ff88;
+      color: #000;
+      border-radius: 5px;
+    }
+ .photo-preview {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 6px auto;
+      display: block;
+      border: 2px solid #00ff88;
+    }
+ .file-input-label {
+      display: block;
+      text-align: center;
+      padding: 7px;
+      background: rgba(0,255,136,0.2);
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px 0;
+      font-size: 12px;
+    }
+ .divider {
+      text-align: center;
+      margin: 10px 0;
+      color: #aaa;
+      position: relative;
+      font-size: 11px;
+    }
+ .divider::before,.divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #444;
+    }
+ .divider::before { left: 0; }
+ .divider::after { right: 0; }
+ .terms-check {
+      display: flex;
+      align-items: start;
+      gap: 5px;
+      margin: 6px 0;
+      font-size: 11px;
+    }
+ .terms-check input[type="checkbox"] {
+      width: auto;
+      margin: 2px 0 0 0;
+      cursor: pointer;
+    }
+ .terms-check label {
+      flex: 1;
+      cursor: pointer;
+    }
+ .terms-link {
+      color: #00ff88;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+ .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 10px;
+    }
+ .modal-content {
+      background: #1a1a2e;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      width: 100%;
+    }
+ .modal-close {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #ff6b6b;
+    }
+ .modal h3 { color: #00ff88; margin-bottom: 10px; font-size: 16px; }
+ .modal p { margin: 6px 0; line-height: 1.4; font-size: 12px; }
+ .nav-tabs {
+      display: flex;
+      gap: 4px;
+      margin: 8px 0;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+ .nav-tab {
+      padding: 5px 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 5px;
+      font-size: 11px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+ .nav-tab.active { background: #00ff88; color: #000; }
+ .user-list {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+ .user-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      margin: 4px 0;
+    }
+ .user-item img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+ .user-info { flex: 1; font-size: 12px; }
+ .user-info.name { font-weight: bold; }
+ .user-info.meta { font-size: 10px; color: #aaa; }
+ .chat-box {
+      height: 200px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      padding: 8px;
+      margin: 8px 0;
+    }
+ .chat-msg {
+      margin: 6px 0;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 12px;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+ .chat-msg.me {
+      background: #00ff88;
+      color: #000;
+      margin-left: auto;
+      text-align: right;
+    }
+ .chat-msg.other {
+      background: rgba(255,255,255,0.1);
+    }
+ .chat-input-group {
+      display: flex;
+      gap: 4px;
+    }
+ .chat-input-group input { flex: 1; margin: 0; }
+ .chat-input-group button { width: auto; margin: 0; padding: 9px 12px; }
+ .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      margin: 4px 0;
+      font-size: 12px;
+    }
+ .rank {
+      font-size: 16px;
+      font-weight: bold;
+      width: 25px;
+      text-align: center;
+    }
+ .rank-1 { color: #ffd700; }
+ .rank-2 { color: #c0c0c0; }
+ .rank-3 { color: #cd7f32; }
+ .search-box {
+      margin: 8px 0;
+    }
+ .battle-container {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0;
+    }
+ .battle-box {
+      flex: 1;
+      background: #000;
+      border-radius: 8px;
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+ .battle-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+ .battle-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 8px;
+      font-size: 11px;
+    }
+ .battle-votes {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255,215,0,0.9);
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+ .game-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+ .game-card {
+      background: rgba(255,255,255,0.1);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+ .game-card:hover { background: rgba(255,255,255,0.2); }
+ .game-icon { font-size: 32px; margin-bottom: 5px; }
+ .game-name { font-size: 12px; font-weight: bold; }
+ .voter-popup {
+      position: absolute;
+      background: #1a1a2e;
+      border: 2px solid #00ff88;
+      border-radius: 8px;
+      padding: 8px;
+      z-index: 100;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: popIn 0.3s;
+    }
+ @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+ .voter-popup img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+ .slot-reel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin: 15px 0;
+    }
+ .slot-reel.reel5x3 {
+      grid-template-columns: repeat(5, 1fr);
+    }
+ .slot-item {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 24px;
+    }
+ .slot-controls {
+      display: flex;
+      gap: 5px;
+      margin: 10px 0;
+    }
+ .slot-controls button {
+      flex: 1;
+    }
+ .win-line {
+      color: #ffd700;
+      font-weight: bold;
+      text-align: center;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN/SIGNUP BOX -->
+  <div class="container" id="loginBox">
+    <h1>🔥 Live Battle 🔥</h1>
+
+    <div class="tab-switch">
+      <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">Login</button>
+      <button class="tab-btn" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <p style="text-align:center; margin-bottom:12px; font-size:12px;">Phone hmangin lut rawh</p>
+      <input type="tel" id="loginPhone" placeholder="+91 9876543210" value="+91">
+      <div id="recaptcha-container"></div>
+      <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+
+      <div id="otpBox" class="hidden">
+        <input type="text" id="otpCode" placeholder="123456" maxlength="6">
+        <button onclick="verifyOTP()">Verify OTP</button>
+      </div>
+
+      <div class="divider">OR</div>
+      <button class="google-btn" onclick="googleLogin()">
+        <svg width="14" height="14" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 0 0 1 4.48-3.3z"/></svg>
+        Google hmangin Login
+      </button>
+    </div>
+
+    <!-- SIGN UP FORM -->
+    <div id="signupForm" class="hidden">
+      <p style="text-align:center; margin-bottom:12px; font-size:12px;">Account thar siam rawh</p>
+
+      <img id="photoPreview" class="photo-preview hidden" src="">
+      <label for="signupPhoto" class="file-input-label">📷 Profile Photo Thlang</label>
+      <input type="file" id="signupPhoto" accept="image/*" class="hidden" onchange="previewPhoto(event)">
+
+      <input type="text" id="signupName" placeholder="I hming pum">
+      <input type="date" id="signupDob" placeholder="Pian Ni">
+      <select id="signupGender">
+        <option value="">Gender thlang rawh</option>
+        <option value="Male">Mipa</option>
+        <option value="Female">Hmeichhia</option>
+        <option value="Other">Sawi duh lo</option>
+      </select>
+      <input type="tel" id="signupPhone" placeholder="+91 9876543210" value="+91">
+
+      <div class="terms-check">
+        <input type="checkbox" id="termsCheck">
+        <label for="termsCheck">
+          <span class="terms-link" onclick="showTerms()">Terms & Conditions</span> ka pawm e
+        </label>
+      </div>
+
+      <div id="recaptcha-container-signup"></div>
+      <button id="signupOtpBtn" onclick="sendSignupOTP()">Send OTP</button>
+
+      <div id="signupOtpBox" class="hidden">
+        <input type="text" id="signupOtpCode" placeholder="123456" maxlength="6">
+        <button onclick="verifySignupOTP()">Verify & Create Account</button>
+      </div>
+
+      <div class="divider">OR</div>
+      <button class="google-btn" onclick="googleSignup()">
+        <svg width="14" height="14" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 0 0 1 4.48-3.3z"/></svg>
+        Google hmangin Sign Up
+      </button>
+    </div>
+
+    <p id="errorMsg" style="color:#ff6b6b; text-align:center; margin-top:8px; font-size:11px;"></p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="container hidden" id="dashboard">
+    <h1>🔥 Live Battle 🔥</h1>
+
+    <!-- NAV TABS -->
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showSection('home')">Home</div>
+      <div class="nav-tab" onclick="showSection('battle')">Battle</div>
+      <div class="nav-tab" onclick="showSection('games')">Games</div>
+      <div class="nav-tab" onclick="showSection('users')">Users</div>
+      <div class="nav-tab" onclick="showSection('chat')">Chat</div>
+      <div class="nav-tab" onclick="showSection('leaderboard')">Top</div>
+      <div class="nav-tab" onclick="showSection('profile')">Profile</div>
+    </div>
+
+    <!-- HOME SECTION -->
+    <div id="homeSection">
+      <img id="userPhoto" class="photo-preview" src="">
+
+      <div class="coin-balance">
+        🪙 <span id="userCoins">0</span> Coins
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-row">
+          <span><b>Hming:</b></span>
+          <span id="userName">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Followers:</b></span>
+          <span><span id="userFollowers">0</span></span>
+        </div>
+        <div class="profile-row">
+          <span><b>Following:</b></span>
+          <span id="userFollowing">0</span>
+        </div>
+      </div>
+
+      <h2>💰 Coin Store</h2>
+      <button class="store-btn" onclick="buyCoins(70, 70)">
+        <span class="coins">70 Coins</span>
+        <span class="price">₹70 <span class="badge">Tlawm Ber</span></span>
+      </button>
+      <button class="store-btn" onclick="buyCoins(150, 160)">
+        <span class="coins">160 Coins</span>
+        <span class="price">₹150</span>
+      </button>
+      <button class="store-btn" onclick="buyCoins(300, 350)">
+        <span class="coins">350 Coins</span>
+        <span class="price">₹300</span>
+      </button>
+      <button class="store-btn best-deal" onclick="buyCoins(500, 600)">
+        <span class="coins">600 Coins</span>
+        <span class="price">₹500 <span class="badge badge-hot">HOT</span></span>
+      </button>
+      <button class="store-btn" onclick="buyCoins(1000, 1200)">
+        <span class="coins">1200 Coins</span>
+        <span class="price">₹1000 <span class="badge badge-hot">BEST</span></span>
+      </button>
+
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- BATTLE SECTION -->
+    <div id="battleSection" class="hidden">
+      <h2>⚔️ Live Battle</h2>
+
+      <div class="battle-container">
+        <div class="battle-box" id="battleBox1">
+          <video class="battle-video" id="video1" autoplay muted playsinline></video>
+          <div class="battle-votes" id="votes1">0 Votes</div>
+          <div class="battle-info">
+            <div id="player1Name">Player 1</div>
+            <button class="vote-btn small" onclick="votePlayer(1)">Vote (10🪙)</button>
+          </div>
+        </div>
+
+        <div class="battle-box" id="battleBox2">
+          <video class="battle-video" id="video2" autoplay muted playsinline></video>
+          <div class="battle-votes" id="votes2">0 Votes</div>
+          <div class="battle-info">
+            <div id="player2Name">Player 2</div>
+            <button class="vote-btn small" onclick="votePlayer(2)">Vote (10🪙)</button>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="startBattle()">🎮 Battle Tan</button>
+      <button onclick="joinBattle()">📹 Battle Join</button>
+
+      <h3>💬 Live Chat</h3>
+      <div id="battleChatBox" class="chat-box"></div>
+      <div class="chat-input-group">
+        <input type="text" id="battleChatInput" placeholder="Chat..." onkeypress="if(event.key==='Enter') sendBattleChat()">
+        <button onclick="sendBattleChat()">Send</button>
+      </div>
+    </div>
+
+    <!-- GAMES SECTION -->
+    <div id="gamesSection" class="hidden">
+      <h2>🎮 Games</h2>
+      <div class="game-grid">
+        <div class="game-card" onclick="openGame('slot5x3')">
+          <div class="game-icon">🎰</div>
+          <div class="game-name">Slot 3x5<br>Animal</div>
+        </div>
+        <div class="game-card" onclick="openGame('slot3x3')">
+          <div class="game-icon">🎲</div>
+          <div class="game-name">Slot 3x3<br>Jackpot</div>
+        </div>
+        <div class="game-card" onclick="openGame('rummy')">
+          <div class="game-icon">🃏</div>
+          <div class="game-name">Rummy<br>8 Players</div>
+        </div>
+        <div class="game-card" onclick="openGame('ludo')">
+          <div class="game-icon">🎯</div>
+          <div class="game-name">Ludo<br>2-4 Players</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS SECTION -->
+    <div id="usersSection" class="hidden">
+      <h2>👥 Users</h2>
+      <input type="text" class="search-box" id="userSearch" placeholder="Hming zawn..." onkeyup="searchUsers()">
+      <div id="usersList" class="user-list"></div>
+    </div>
+
+    <!-- CHAT SECTION -->
+    <div id="chatSection" class="hidden">
+      <h2>💬 Private Chat</h2>
+      <div id="chatUserList" class="user-list"></div>
+      <div id="chatWindow" class="hidden">
+        <button class="small" onclick="closeChat()">← Kir</button>
+        <h3 id="chatWithName"></h3>
+        <div id="chatBox" class="chat-box"></div>
+        <div class="chat-input-group">
+          <input type="text" id="chatInput" placeholder="Message type rawh..." onkeypress="if(event.key==='Enter') sendMessage()">
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD SECTION -->
+    <div id="leaderboardSection" class="hidden">
+      <h2>🏆 Leaderboard</h2>
+      <div class="nav-tabs">
+        <div class="nav-tab active" onclick="loadLeaderboard('week')">1 Week</div>
+        <div class="nav-tab" onclick="loadLeaderboard('month')">30 Day</div>
+        <div class="nav-tab" onclick="loadLeaderboard('all')">All Time</div>
+      </div>
+      <div id="leaderboardList"></div>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div id="profileSection" class="hidden">
+      <h2>👤 Ka Profile</h2>
+      <img id="editPhotoPreview" class="photo-preview" src="">
+      <label for="editPhoto" class="file-input-label">📷 Thlalak Thlak</label>
+      <input type="file" id="editPhoto" accept="image/*" class="hidden" onchange="previewEditPhoto(event)">
+
+      <input type="text" id="editName" placeholder="Hming">
+      <input type="date" id="editDob" placeholder="Pian Ni">
+      <select id="editGender">
+        <option value="">Gender thlang rawh</option>
+        <option value="Male">Mipa</option>
+        <option value="Female">Hmeichhia</option>
+        <option value="Other">Sawi duh lo</option>
+      </select>
+      <textarea id="editBio" placeholder="Bio (chhiar tur)" rows="3"></textarea>
+      <button class="edit-btn" onclick="saveProfile()">Save Profile</button>
+
+      <div class="profile-card" style="margin-top:12px;">
+        <div class="profile-row">
+          <span><b>Phone:</b></span>
+          <span id="profilePhone">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Join:</b></span>
+          <span id="profileJoined">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TERMS MODAL -->
+  <div id="termsModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeTerms()">&times;</span>
+      <h3>Terms & Conditions / Hman Dan Tur</h3>
+
+      <h4 style="color:#00ff88;margin-top:12px;">🇬🇧 English</h4>
+      <p><b>1. Account:</b> You must be 13+ years old. Provide accurate information during signup.</p>
+      <p><b>2. Coins:</b> Coins are virtual currency for Live Battle. No real money refund. All purchases are final.</p>
+      <p><b>3. Conduct:</b> No harassment, hate speech, or illegal content. Violators will be banned.</p>
+      <p><b>4. Privacy:</b> We store your phone, name, DOB, gender, and photo for account purposes only.</p>
+      <p><b>5. Liability:</b> Use at your own risk. We are not liable for any losses.</p>
+
+      <h4 style="color:#00ff88;margin-top:15px;">🇲🇲 Mizo Tawng</h4>
+      <p><b>1. Account:</b> Kum 13 chin chung lam chauh an sign up thei. I information dik tak dah ang che.</p>
+      <p><b>2. Coins:</b> Coins hi Live Battle atan a ni. Pawisa tak pek kir theih loh. Lei tawh chu cancel theih loh.</p>
+      <p><b>3. Nungchang:</b> Midang tihduhdah, tawngkam mawi lo, dan bawhchhiatna a awm tur a ni lo. Ti tu chu ban a ni ang.</p>
+      <p><b>4. Privacy:</b> I phone, hming, pian ni, gender, thlalak te hi account atan chauh kan kawl.</p>
+      <p><b>5. Mawhphurhna:</b> I mawhphurhna a ni. Kan mawh a ni lo.</p>
+
+      <p style="margin-top:15px;text-align:center;"><b>By signing up, you agree / Sign up i tih chuan i pawm tihna a ni.</b></p>
+    </div>
+  </div>
+
+  <!-- USER PROFILE MODAL -->
+  <div id="userProfileModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeUserProfile()">&times;</span>
+      <img id="modalUserPhoto" class="photo-preview" src="">
+      <h3 id="modalUserName"></h3>
+      <div class="profile-card">
+        <div class="profile-row">
+          <span><b>Followers:</b></span>
+          <span id="modalUserFollowers">0</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Following:</b></span>
+          <span id="modalUserFollowing">0</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Coins:</b></span>
+          <span id="modalUserCoins">0</span>
+        </div>
+        <div class="profile-row">
+          <span><b>Bio:</b></span>
+          <span id="modalUserBio">-</span>
+        </div>
+      <button id="followBtn" class="follow-btn" onclick="toggleFollow()">Follow</button>
+      <button class="chat-btn" onclick="openChatFromProfile()">Message</button>
+    </div>
+  </div>
+
+  <!-- GAME MODAL -->
+  <div id="gameModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeGame()">&times;</span>
+      <h3 id="gameTitle">Game</h3>
+      <div id="gameContent"></div>
+    </div>
+  </div>
+
+  <!-- FIREBASE + APP LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp, arrayUnion, arrayRemove, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    // 1. FIREBASE CONFIG - I TA NEN THLAK RAWH
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      authDomain: "live-battle-social.firebaseapp.com",
+      projectId: "live-battle-social",
+      storageBucket: "live-battle-social.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef123456"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    let confirmationResult = null;
+    let signupConfirmationResult = null;
+    let unsubscribeUser = null;
+    let tempSignupData = {};
+    let selectedPhotoFile = null;
+    let selectedEditPhotoFile = null;
+    let currentUser = null;
+    let currentChatUser = null;
+    let chatUnsubscribe = null;
+    let viewingUserId = null;
+    let battleUnsubscribe = null;
+    let battleChatUnsubscribe = null;
+    let currentBattleId = null;
+
+       // 2. TAB SWITCH
+    window.switchTab = (tab) => {
+      if (tab === 'login') {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('signupForm').classList.add('hidden');
+        document.getElementById('loginTab').classList.add('active');
+        document.getElementById('signupTab').classList.remove('active');
+      } else {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('signupForm').classList.remove('hidden');
+        document.getElementById('loginTab').classList.remove('active');
+        document.getElementById('signupTab').classList.add('active');
+        setupSignupRecaptcha();
+      }
+      document.getElementById('errorMsg').innerText = '';
+    }
+
+    // 3. SECTION SWITCH
+    window.showSection = (section) => {
+      document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.getElementById('homeSection').classList.add('hidden');
+      document.getElementById('battleSection').classList.add('hidden');
+      document.getElementById('gamesSection').classList.add('hidden');
+      document.getElementById('profileSection').classList.add('hidden');
+      document.getElementById('usersSection').classList.add('hidden');
+      document.getElementById('chatSection').classList.add('hidden');
+      document.getElementById('leaderboardSection').classList.add('hidden');
+
+      document.getElementById(section + 'Section').classList.remove('hidden');
+
+      if (section === 'users') loadUsers();
+      if (section === 'chat') loadChatUsers();
+      if (section === 'leaderboard') loadLeaderboard('week');
+      if (section === 'profile') loadEditProfile();
+      if (section === 'battle') initBattle();
+    }
+
+    // 4. TERMS MODAL
+    window.showTerms = () => {
+      document.getElementById('termsModal').classList.remove('hidden');
+    }
+    window.closeTerms = () => {
+      document.getElementById('termsModal').classList.add('hidden');
+    }
+
+    // 5. PHOTO PREVIEW
+    window.previewPhoto = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        selectedPhotoFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('photoPreview').src = e.target.result;
+          document.getElementById('photoPreview').classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    window.previewEditPhoto = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        selectedEditPhotoFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('editPhotoPreview').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // 6. RECAPTCHA SETUP
+    window.onload = () => {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'normal'
+      });
+      recaptchaVerifier.render();
+    }
+
+    function setupSignupRecaptcha() {
+      if (!window.recaptchaVerifierSignup) {
+        window.recaptchaVerifierSignup = new RecaptchaVerifier(auth, 'recaptcha-container-signup', {
+          'size': 'normal'
+        });
+        recaptchaVerifierSignup.render();
+      }
+    }
+
+    // 7. GOOGLE LOGIN
+    window.googleLogin = async () => {
+      try {
+        await signInWithPopup(auth, googleProvider);
+      } catch (error) {
+        document.getElementById('errorMsg').innerText = 'Google Login Error: ' + error.message;
+      }
+    }
+
+    // 8. GOOGLE SIGNUP
+    window.googleSignup = async () => {
+      if (!document.getElementById('termsCheck').checked) {
+        document.getElementById('errorMsg').innerText = 'Terms & Conditions i pawm a ngai';
         return;
+      }
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        await createUserProfile(result.user, result.user.displayName, null, null, result.user.photoURL);
+      } catch (error) {
+        document.getElementById('errorMsg').innerText = 'Google Signup Error: ' + error.message;
+      }
     }
 
-    peer = new Peer(PEER_CONFIG);
-    peer.on('open', id => {
-        currentRoomId = id;
-        document.getElementById('roomCodeText').textContent = id;
-        document.getElementById('hostName').textContent = currentUser.name;
-        const link = `${window.location.origin}${window.location.pathname}?room=${id}`;
-        document.getElementById('shareLink').textContent = link;
-    });
+    // 9. LOGIN SEND OTP
+    window.sendOTP = async () => {
+      const phoneNumber = document.getElementById('loginPhone').value;
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.innerText = '';
 
-    peer.on('call', call => {
-        call.answer(localStream);
-        call.on('stream', stream => {
-            document.getElementById('guestVideo').srcObject = stream;
-        });
-    });
+      if (!phoneNumber || phoneNumber.length < 10) {
+        errorMsg.innerText = 'Phone number dik lo';
+        return;
+      }
 
-    peer.on('connection', conn => {
-        hostConnection = conn;
-        conn.on('data', data => {
-            if(data.type === 'userInfo') {
-                document.getElementById('guestName').textContent = data.name;
-            }
-            if(data.type === 'gift') {
-                scores.guest += data.value;
-                updateScores();
-            }
-        });
-    });
-}
+      document.getElementById('sendOtpBtn').disabled = true;
+      document.getElementById('sendOtpBtn').innerText = 'Tirh mek...';
 
-function joinRoom(roomId) {
-    if(!roomId) return alert('Room Code dah rawh');
-    isHost = false;
-    showView('guest');
-
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
-        localStream = stream;
-        document.getElementById('guestSelfVideo').srcObject = stream;
-        document.getElementById('guestSelfName').textContent = currentUser.name;
-
-        peer = new Peer(PEER_CONFIG);
-        peer.on('open', () => {
-            const call = peer.call(roomId, stream);
-            call.on('stream', remoteStream => {
-                document.getElementById('guestHostVideo').srcObject = remoteStream;
-            });
-
-            guestConnection = peer.connect(roomId);
-            guestConnection.on('open', () => {
-                guestConnection.send({ type: 'userInfo', name: currentUser.name });
-            });
-        });
-    }).catch(err => {
-        alert('Camera/Mic phalna pek a ngai: ' + err.message);
-        showView('lobby');
-    });
-}
-
-function sendGift(value) {
-    if(!guestConnection) return alert('Host nen in connect lo');
-    scores.host += value;
-    updateScores();
-    guestConnection.send({ type: 'gift', value });
-}
-
-function updateScores() {
-    if(isHost) {
-        document.getElementById('hostScore').textContent = scores.host;
-        document.getElementById('guestScore').textContent = scores.guest;
-    } else {
-        document.getElementById('guestHostScore').textContent = scores.host;
-        document.getElementById('guestSelfScore').textContent = scores.guest;
+      try {
+        confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+        document.getElementById('otpBox').classList.remove('hidden');
+        document.getElementById('sendOtpBtn').innerText = 'OTP Thawn Tawh';
+        errorMsg.innerText = 'OTP thawn a ni. I phone en rawh.';
+      } catch (error) {
+        errorMsg.innerText = 'Error: ' + error.message;
+        document.getElementById('sendOtpBtn').disabled = false;
+        document.getElementById('sendOtpBtn').innerText = 'Send OTP';
+      }
     }
-}
 
-function copyLink() {
-    navigator.clipboard.writeText(document.getElementById('shareLink').textContent);
-    alert('Link copied!');
-}
+    // 10. LOGIN VERIFY OTP
+    window.verifyOTP = async () => {
+      const code = document.getElementById('otpCode').value;
+      const errorMsg = document.getElementById('errorMsg');
 
-function checkUrlForRoom() {
-    const params = new URLSearchParams(window.location.search);
-    const room = params.get('room');
-    if(room) {
-        const name = prompt('I hming:') || `Guest${Math.floor(Math.random()*1000)}`;
-        currentUser = { name };
-        joinRoom(room);
+      if (!code || code.length!== 6) {
+        errorMsg.innerText = 'OTP 6-digit dah rawh';
+        return;
+      }
+
+      try {
+        await confirmationResult.confirm(code);
+        errorMsg.innerText = 'Login success!';
+      } catch (error) {
+        errorMsg.innerText = 'OTP dik lo: ' + error.message;
+      }
     }
-}
 
-init();
-</script>
+    // 11. SIGNUP SEND OTP
+    window.sendSignupOTP = async () => {
+      const name = document.getElementById('signupName').value;
+      const dob = document.getElementById('signupDob').value;
+      const gender = document.getElementById('signupGender').value;
+      const phoneNumber = document.getElementById('signupPhone').value;
+      const termsChecked = document.getElementById('termsCheck').checked;
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.innerText = '';
+
+      if (!name || name.length < 2) {
+        errorMsg.innerText = 'Hming dik lo';
+        return;
+      }
+      if (!dob) {
+        errorMsg.innerText = 'Pian ni dah rawh';
+        return;
+      }
+      if (!gender) {
+        errorMsg.innerText = 'Gender thlang rawh';
+        return;
+      }
+      if (!phoneNumber || phoneNumber.length < 10) {
+        errorMsg.innerText = 'Phone number dik lo';
+        return;
+      }
+      if (!termsChecked) {
+        errorMsg.innerText = 'Terms & Conditions i pawm a ngai';
+        return;
+      }
+
+      tempSignupData = { name, dob, gender, phone: phoneNumber };
+      document.getElementById('signupOtpBtn').disabled = true;
+      document.getElementById('signupOtpBtn').innerText = 'Tirh mek...';
+
+      try {
+        signupConfirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifierSignup);
+        document.getElementById('signupOtpBox').classList.remove('hidden');
+        document.getElementById('signupOtpBtn').innerText = 'OTP Thawn Tawh';
+        errorMsg.innerText = 'OTP thawn a ni. I phone en rawh.';
+      } catch (error) {
+        errorMsg.innerText = 'Error: ' + error.message;
+        document.getElementById('signupOtpBtn').disabled = false;
+        document.getElementById('signupOtpBtn').innerText = 'Send OTP';
+      }
+    }
+
+    // 12. SIGNUP VERIFY OTP + UPLOAD PHOTO
+    window.verifySignupOTP = async () => {
+      const code = document.getElementById('signupOtpCode').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      if (!code || code.length!== 6) {
+        errorMsg.innerText = 'OTP 6-digit dah rawh';
+        return;
+      }
+
+      try {
+        const result = await signupConfirmationResult.confirm(code);
+        let photoURL = "";
+
+        if (selectedPhotoFile) {
+          const storageRef = ref(storage, `profile_photos/${result.user.uid}`);
+          await uploadBytes(storageRef, selectedPhotoFile);
+          photoURL = await getDownloadURL(storageRef);
+        }
+
+        await createUserProfile(result.user, tempSignupData.name, tempSignupData.dob, tempSignupData.gender, photoURL);
+        errorMsg.innerText = 'Account siam zo! Login a ni e.';
+      } catch (error) {
+        errorMsg.innerText = 'OTP dik lo: ' + error.message;
+      }
+    }
+
+    // 13. CREATE PROFILE
+    async function createUserProfile(user, customName = null, dob = null, gender = null, photoURL = null) {
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          displayName: customName || user.displayName || "User" + user.uid.slice(0,4),
+          phone: user.phoneNumber,
+          dob: dob || "",
+          gender: gender || "",
+          bio: "Mizo Live Battle player",
+          coins: 100,
+          followersCount: 0,
+          followingCount: 0,
+          followers: [],
+          following: [],
+          photoURL: photoURL || user.photoURL || "",
+          createdAt: serverTimestamp(),
+          weeklyCoins: 0,
+          monthlyCoins: 0
+        });
+      }
+    }
+
+    // 14. REALTIME USER UPDATE
+    function watchUserData(uid) {
+      if (unsubscribeUser) unsubscribeUser();
+
+      const userRef = doc(db, "users", uid);
+      unsubscribeUser = onSnapshot(userRef, (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          currentUser = { uid,...data };
+          document.getElementById('userName').innerText = data.displayName;
+          document.getElementById('userCoins').innerText = data.coins;
+          document.getElementById('userFollowers').innerText = data.followersCount;
+          document.getElementById('userFollowing').innerText = data.followingCount;
+          if (data.photoURL) {
+            document.getElementById('userPhoto').src = data.photoURL;
+            document.getElementById('userPhoto').classList.remove('hidden');
+          }
+        }
+      });
+    }
+
+    // 15. AUTH STATE LISTENER
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await createUserProfile(user);
+        watchUserData(user.uid);
+        document.getElementById('loginBox').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+      } else {
+        if (unsubscribeUser) unsubscribeUser();
+        document.getElementById('loginBox').classList.remove('hidden');
+        document.getElementById('dashboard').classList.add('hidden');
+      }
+    });
+
+    // 16. STORE FUNCTION
+    window.buyCoins = async (amount, coins) => {
+      if (confirm(`₹${amount} in ${coins} Coins i lei dawn. Confirm?`)) {
+        const userRef = doc(db, "users", auth.currentUser.uid);
+        await updateDoc(userRef, {
+          coins: increment(coins),
+          weeklyCoins: increment(coins),
+          monthlyCoins: increment(coins)
+        });
+        alert(`✅ ${coins} Coins i account ah dah luh a ni e!`);
+      }
+    }
+
+    // 17. LOGOUT
+    window.logout = () => signOut(auth);
+
+    // 18. LOAD EDIT PROFILE
+    window.loadEditProfile = () => {
+      if (!currentUser) return;
+      document.getElementById('editName').value = currentUser.displayName || '';
+      document.getElementById('editDob').value = currentUser.dob || '';
+      document.getElementById('editGender').value = currentUser.gender || '';
+      document.getElementById('editBio').value = currentUser.bio || '';
+      document.getElementById('editPhotoPreview').src = currentUser.photoURL || '';
+      document.getElementById('profilePhone').innerText = currentUser.phone || 'Google User';
+      document.getElementById('profileJoined').innerText = currentUser.createdAt? new Date(currentUser.createdAt.toDate()).toLocaleDateString() : '-';
+    }
+
+    // 19. SAVE PROFILE
+    window.saveProfile = async () => {
+      const name = document.getElementById('editName').value;
+      const dob = document.getElementById('editDob').value;
+      const gender = document.getElementById('editGender').value;
+      const bio = document.getElementById('editBio').value;
+
+      if (!name || name.length < 2) {
+        alert('Hming dik lo');
+        return;
+      }
+
+      let photoURL = currentUser.photoURL;
+      if (selectedEditPhotoFile) {
+        const storageRef = ref(storage, `profile_photos/${auth.currentUser.uid}`);
+        await uploadBytes(storageRef, selectedEditPhotoFile);
+        photoURL = await getDownloadURL(storageRef);
+        selectedEditPhotoFile = null;
+      }
+
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        displayName: name,
+        dob: dob,
+        gender: gender,
+        bio: bio,
+        photoURL: photoURL
+      });
+
+      alert('Profile save zo!');
+    }
+
+    // 20. LOAD USERS
+    async function loadUsers() {
+      const q = query(collection(db, "users"), orderBy("coins", "desc"), limit(50));
+      const querySnapshot = await getDocs(q);
+      const usersList = document.getElementById('usersList');
+      usersList.innerHTML = '';
+
+      querySnapshot.forEach((doc) => {
+        if (doc.id === auth.currentUser.uid) return;
+        const data = doc.data();
+        const isFollowing = currentUser?.following?.includes(doc.id);
+        usersList.innerHTML += `
+          <div class="user-item" onclick="viewUserProfile('${doc.id}')">
+            <img src="${data.photoURL || 'https://via.placeholder.com/35'}" alt="">
+            <div class="user-info">
+              <div class="name">${data.displayName}</div>
+              <div class="meta">🪙 ${data.coins} | ${data.followersCount} followers</div>
+            </div>
+            <button class="small ${isFollowing? 'unfollow-btn' : 'follow-btn'}" onclick="event.stopPropagation(); quickFollow('${doc.id}', ${isFollowing})">
+              ${isFollowing? 'Unfollow' : 'Follow'}
+            </button>
+          </div>
+        `;
+      });
+    }
+
+    // 21. SEARCH USERS
+    window.searchUsers = async () => {
+      const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+      if (!searchTerm) {
+        loadUsers();
+        return;
+      }
+      const q = query(collection(db, "users"));
+      const querySnapshot = await getDocs(q);
+      const usersList = document.getElementById('usersList');
+      usersList.innerHTML = '';
+
+      querySnapshot.forEach((doc) => {
+        if (doc.id === auth.currentUser.uid) return;
+        const data = doc.data();
+        if (data.displayName.toLowerCase().includes(searchTerm)) {
+          const isFollowing = currentUser?.following?.includes(doc.id);
+          usersList.innerHTML += `
+            <div class="user-item" onclick="viewUserProfile('${doc.id}')">
+              <img src="${data.photoURL || 'https://via.placeholder.com/35'}" alt="">
+              <div class="user-info">
+                <div class="name">${data.displayName}</div>
+                <div class="meta">🪙 ${data.coins} | ${data.followersCount} followers</div>
+              </div>
+              <button class="small ${isFollowing? 'unfollow-btn' : 'follow-btn'}" onclick="event.stopPropagation(); quickFollow('${doc.id}', ${isFollowing})">
+                ${isFollowing? 'Unfollow' : 'Follow'}
+              </button>
+            </div>
+          `;
+        }
+      });
+    }
+
+    // 22. VIEW USER PROFILE
+    window.viewUserProfile = async (userId) => {
+      viewingUserId = userId;
+      const userDoc = await getDoc(doc(db, "users", userId));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        document.getElementById('modalUserPhoto').src = data.photoURL || 'https://via.placeholder.com/60';
+        document.getElementById('modalUserName').innerText = data.displayName;
+        document.getElementById('modalUserFollowers').innerText = data.followersCount;
+        document.getElementById('modalUserFollowing').innerText = data.followingCount;
+        document.getElementById('modalUserCoins').innerText = data.coins;
+        document.getElementById('modalUserBio').innerText = data.bio || '-';
+
+        const isFollowing = currentUser?.following?.includes(userId);
+        document.getElementById('followBtn').innerText = isFollowing? 'Unfollow' : 'Follow';
+        document.getElementById('followBtn').className = isFollowing? 'unfollow-btn' : 'follow-btn';
+
+        document.getElementById('userProfileModal').classList.remove('hidden');
+      }
+    }
+
+    window.closeUserProfile = () => {
+      document.getElementById('userProfileModal').classList.add('hidden');
+      viewingUserId = null;
+    }
+
+    // 23. FOLLOW/UNFOLLOW
+    window.toggleFollow = async () => {
+      if (!viewingUserId) return;
+      const isFollowing = currentUser?.following?.includes(viewingUserId);
+
+      if (isFollowing) {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          following: arrayRemove(viewingUserId),
+          followingCount: increment(-1)
+        });
+        await updateDoc(doc(db, "users", viewingUserId), {
+          followers: arrayRemove(auth.currentUser.uid),
+          followersCount: increment(-1)
+        });
+      } else {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          following: arrayUnion(viewingUserId),
+          followingCount: increment(1)
+        });
+        await updateDoc(doc(db, "users", viewingUserId), {
+          followers: arrayUnion(auth.currentUser.uid),
+          followersCount: increment(1)
+        });
+      }
+      closeUserProfile();
+    }
+
+    window.quickFollow = async (userId, isFollowing) => {
+      if (isFollowing) {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          following: arrayRemove(userId),
+          followingCount: increment(-1)
+        });
+        await updateDoc(doc(db, "users", userId), {
+          followers: arrayRemove(auth.currentUser.uid),
+          followersCount: increment(-1)
+        });
+      } else {
+        await updateDoc(doc(db, "users", auth.currentUser.uid), {
+          following: arrayUnion(userId),
+          followingCount: increment(1)
+        });
+        await updateDoc(doc(db, "users", userId), {
+          followers: arrayUnion(auth.currentUser.uid),
+          followersCount: increment(1)
+        });
+      }
+      loadUsers();
+    }
+
+    // 24. CHAT FUNCTIONS
+    async function loadChatUsers() {
+      const q = query(collection(db, "users"), where("followers", "array-contains", auth.currentUser.uid));
+      const querySnapshot = await getDocs(q);
+      const chatUserList = document.getElementById('chatUserList');
+      chatUserList.innerHTML = '<h3>Followers</h3>';
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        chatUserList.innerHTML += `
+          <div class="user-item" onclick="openChat('${doc.id}', '${data.displayName}')">
+            <img src="${data.photoURL || 'https://via.placeholder.com/35'}" alt="">
+            <div class="user-info">
+              <div class="name">${data.displayName}</div>
+              <div class="meta">Click to chat</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    window.openChat = (userId, userName) => {
+      currentChatUser = userId;
+      document.getElementById('chatWithName').innerText = userName;
+      document.getElementById('chatUserList').classList.add('hidden');
+      document.getElementById('chatWindow').classList.remove('hidden');
+      loadMessages();
+    }
+
+    window.openChatFromProfile = () => {
+      if (!viewingUserId) return;
+      const userName = document.getElementById('modalUserName').innerText;
+      closeUserProfile();
+      showSection('chat');
+      setTimeout(() => openChat(viewingUserId, userName), 100);
+    }
+
+    window.closeChat = () => {
+      if (chatUnsubscribe) chatUnsubscribe();
+      document.getElementById('chatWindow').classList.add('hidden');
+      document.getElementById('chatUserList').classList.remove('hidden');
+      currentChatUser = null;
+    }
+
+    function loadMessages() {
+      if (chatUnsubscribe) chatUnsubscribe();
+      const chatId = [auth.currentUser.uid, currentChatUser].sort().join('_');
+      const q = query(
+        collection(db, "chats", chatId, "messages"),
+        orderBy("timestamp", "asc"),
+        limit(100)
+      );
+
+      chatUnsubscribe = onSnapshot(q, (snapshot) => {
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML = '';
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const isMe = data.senderId === auth.currentUser.uid;
+          chatBox.innerHTML += `
+            <div class="chat-msg ${isMe? 'me' : 'other'}">
+              ${data.text}
+            </div>
+          `;
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+    }
+
+    window.sendMessage = async () => {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text ||!currentChatUser) return;
+
+      const chatId = [auth.currentUser.uid, currentChatUser].sort().join('_');
+      await addDoc(collection(db, "chats", chatId, "messages"), {
+        text: text,
+        senderId: auth.currentUser.uid,
+        timestamp: serverTimestamp()
+      });
+
+      input.value = '';
+    }
+
+    // 25. LEADERBOARD
+    window.loadLeaderboard = async (period) => {
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = 'Loading...';
+
+      let orderField = 'coins';
+      if (period === 'week') orderField = 'weeklyCoins';
+      if (period === 'month') orderField = 'monthlyCoins';
+
+      const q = query(collection(db, "users"), orderBy(orderField, "desc"), limit(100));
+      const querySnapshot = await getDocs(q);
+      list.innerHTML = '';
+
+      let rank = 1;
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const rankClass = rank <= 3? `rank-${rank}` : '';
+        list.innerHTML += `
+          <div class="leaderboard-item" onclick="viewUserProfile('${doc.id}')">
+            <div class="rank ${rankClass}">${rank}</div>
+            <img src="${data.photoURL || 'https://via.placeholder.com/35'}" style="width:35px;height:35px;border-radius:50%;" alt="">
+            <div class="user-info" style="flex:1;">
+              <div class="name">${data.displayName}</div>
+              <div class="meta">🪙 ${data[orderField] || 0} | ${data.followersCount} followers</div>
+            </div>
+          </div>
+        `;
+        rank++;
+      });
+    }
+
+    // 26. BATTLE FUNCTIONS
+    function initBattle() {
+      // Setup camera streams if needed
+    }
+
+    window.startBattle = async () => {
+      alert('Battle system - Camera permission dil tur. Video stream setup la tih loh. Demo mode.');
+    }
+
+    window.joinBattle = async () => {
+      alert('Battle join - User 2 tur. Video call WebRTC la tih loh. Demo mode.');
+    }
+
+    window.votePlayer = async (player) => {
+      if (currentUser.coins < 10) {
+        alert('Coins a tlem! 10 coins tal i nei a ngai');
+        return;
+      }
+
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        coins: increment(-10)
+      });
+
+      // Vote count update
+      const voteEl = document.getElementById(`votes${player}`);
+      const currentVotes = parseInt(voteEl.innerText);
+      voteEl.innerText = (currentVotes + 1) + ' Votes';
+
+      // Voter popup animation
+      showVoterPopup(player);
+
+      // Battle chat ah vote message
+      if (currentBattleId) {
+        await addDoc(collection(db, "battles", currentBattleId, "chat"), {
+          text: `${currentUser.displayName} voted Player ${player}! 🗳️`,
+          senderId: 'system',
+          timestamp: serverTimestamp()
+        });
+      }
+    }
+
+    function showVoterPopup(player) {
+      const battleBox = document.getElementById(`battleBox${player}`);
+      const popup = document.createElement('div');
+      popup.className = 'voter-popup';
+      popup.innerHTML = `
+        <img src="${currentUser.photoURL || 'https://via.placeholder.com/30'}" alt="">
+        <div>
+          <div>${currentUser.displayName}</div>
+          <div>+10 🪙</div>
+        </div>
+      `;
+      popup.style.left = Math.random() * 60 + '%';
+      popup.style.top = Math.random() * 60 + '%';
+      battleBox.appendChild(popup);
+      setTimeout(() => popup.remove(), 2000);
+    }
+
+    window.sendBattleChat = async () => {
+      const input = document.getElementById('battleChatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Battle ID awm loh chuan siam
+      if (!currentBattleId) {
+        const battleRef = await addDoc(collection(db, "battles"), {
+          createdAt: serverTimestamp(),
+          active: true
+        });
+        currentBattleId = battleRef.id;
+        listenBattleChat();
+      }
+
+      await addDoc(collection(db, "battles", currentBattleId, "chat"), {
+        text: text,
+        senderId: auth.currentUser.uid,
+        senderName: currentUser.displayName,
+        senderPhoto: currentUser.photoURL,
+        timestamp: serverTimestamp()
+      });
+
+      input.value = '';
+    }
+
+    function listenBattleChat() {
+      if (battleChatUnsubscribe) battleChatUnsubscribe();
+      const q = query(
+        collection(db, "battles", currentBattleId, "chat"),
+        orderBy("timestamp", "desc"),
+        limit(50)
+      );
+
+      battleChatUnsubscribe = onSnapshot(q, (snapshot) => {
+        const chatBox = document.getElementById('battleChatBox');
+        chatBox.innerHTML = '';
+        const messages = [];
+        snapshot.forEach((doc) => messages.unshift(doc.data()));
+        messages.forEach((data) => {
+          const isMe = data.senderId === auth.currentUser.uid;
+          const isSystem = data.senderId === 'system';
+          chatBox.innerHTML += `
+            <div class="chat-msg ${isMe? 'me' : isSystem? '' : 'other'}" style="${isSystem? 'background:rgba(255,215,0.3);text-align:center;max-width:100%;' : ''}">
+              ${!isSystem? `<b>${data.senderName}:</b> ` : ''}${data.text}
+            </div>
+          `;
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+    }
+
+    // 27. GAME FUNCTIONS
+    window.openGame = (gameType) => {
+      document.getElementById('gameModal').classList.remove('hidden');
+      const gameContent = document.getElementById('gameContent');
+
+      if (gameType === 'slot5x3') {
+        document.getElementById('gameTitle').innerText = '🎰 Slot 3x5 - Animal';
+        gameContent.innerHTML = `
+          <div class="slot-reel reel5x3" id="slot5x3Reel">
+            ${Array(15).fill('🐯').map(() => `<div class="slot-item">🐯</div>`).join('')}
+          </div>
+          <div class="win-line" id="slot5x3Win"></div>
+          <div class="slot-controls">
+            <button onclick="spinSlot5x3(10)">Spin 10🪙</button>
+            <button onclick="spinSlot5x3(50)">Spin 50🪙</button>
+            <button onclick="spinSlot5x3(100)">Spin 100🪙</button>
+          </div>
+          <p style="font-size:11px;color:#aaa;text-align:center;">Win Lines: 12 | Animals: 🐯🦁🐘🐼🐵</p>
+        `;
+      } else if (gameType === 'slot3x3') {
+        document.getElementById('gameTitle').innerText = '🎲 Slot 3x3 - Jackpot';
+        gameContent.innerHTML = `
+          <div class="slot-reel" id="slot3x3Reel">
+            ${Array(9).fill('💎').map(() => `<div class="slot-item">💎</div>`).join('')}
+          </div>
+          <div class="win-line" id="slot3x3Win"></div>
+          <div class="slot-controls">
+            <button onclick="spinSlot3x3(10)">Spin 10🪙</button>
+            <button onclick="spinSlot3x3(50)">Spin 50🪙</button>
+            <button onclick="spinSlot3x3(100)">Spin 100🪙</button>
+          </div>
+          <p style="font-size:11px;color:#aaa;text-align:center;">Jackpot: 💎💎💎 | Mini: 7️⃣7️⃣7️⃣ | Major: 🔔🔔🔔 | Scatter: ⭐</p>
+        `;
+      } else if (gameType === 'rummy') {
+        document.getElementById('gameTitle').innerText = '🃏 Rummy - 8 Players';
+        gameContent.innerHTML = `
+          <p style="text-align:center;">Rummy game - User vs User</p>
+          <p style="font-size:11px;color:#aaa;text-align:center;margin:10px 0;">Max 8 players. Real-time multiplayer la siam loh.</p>
+          <button onclick="alert('Rummy game la siam loh. Multiplayer socket.io nen a ngai.')">Join Room</button>
+          <button onclick="alert('Create room la siam loh')">Create Room</button>
+        `;
+      } else if (gameType === 'ludo') {
+        document.getElementById('gameTitle').innerText = '🎯 Ludo - 2-4 Players';
+        gameContent.innerHTML = `
+          <p style="text-align:center;">Ludo game - User vs User</p>
+          <p style="font-size:11px;color:#aaa;text-align:center;margin:10px 0;">2-4 players. Real-time multiplayer la siam loh.</p>
+          <button onclick="alert('Ludo game la siam loh. Canvas/WebGL nen a ngai.')">Join Room</button>
+          <button onclick="alert('Create room la siam loh')">Create Room</button>
+        `;
+      }
+    }
+
+    window.closeGame = () => {
+      document.getElementById('gameModal').classList.add('hidden');
+    }
+
+    // Slot 5x3 Logic
+    window.spinSlot5x3 = async (bet) => {
+      if (currentUser.coins < bet) {
+        alert('Coins a tlem!');
+        return;
+      }
+
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        coins: increment(-bet)
+      });
+
+      const animals = ['🐯', '🦁', '🐘', '🐼', '🐵'];
+      const reel = document.getElementById('slot5x3Reel');
+      const items = reel.querySelectorAll('.slot-item');
+
+      // Spin animation
+      items.forEach(item => {
+        item.style.transform = 'rotateX(360deg)';
+        item.style.transition = 'transform 0.5s';
+      });
+
+      setTimeout(() => {
+        const result = [];
+        items.forEach((item, i) => {
+          const rand = animals[Math.floor(Math.random() * animals.length)];
+          item.innerText = rand;
+          item.style.transform = 'rotateX(0deg)';
+          result.push(rand);
+        });
+
+        // Check win lines (12 lines)
+        const winLines = [
+          [0,1,2,3,4], [5,6,7,8,9], [10,11,12,13,14], // Horizontal
+          [0,5,10], [1,6,11], [2,7,12], [3,8,13], [4,9,14], // Vertical
+          [0,6,12], [1,7,13], [2,8,14], [3,7,11] // Diagonal
+        ];
+
+        let totalWin = 0;
+        winLines.forEach(line => {
+          const lineAnimals = line.map(i => result[i]);
+          if (lineAnimals.every(a => a === lineAnimals[0])) {
+            totalWin += bet * 5; // 5x payout
+          }
+        });
+
+        if (totalWin > 0) {
+          document.getElementById('slot5x3Win').innerText = `🎉 WIN ${totalWin} 🪙!`;
+          updateDoc(doc(db, "users", auth.currentUser.uid), {
+            coins: increment(totalWin)
+          });
+        } else {
+          document.getElementById('slot5x3Win').innerText = 'Try again!';
+        }
+      }, 500);
+    }
+
+    // Slot 3x3 Logic
+    window.spinSlot3x3 = async (bet) => {
+      if (currentUser.coins < bet) {
+        alert('Coins a tlem!');
+        return;
+      }
+
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        coins: increment(-bet)
+      });
+
+      const symbols = ['💎', '7️⃣', '🔔', '⭐', '🍒', '🍋'];
+      const reel = document.getElementById('slot3x3Reel');
+      const items = reel.querySelectorAll('.slot-item');
+
+      items.forEach(item => {
+        item.style.transform = 'rotateX(360deg)';
+        item.style.transition = 'transform 0.5s';
+      });
+
+      setTimeout(() => {
+        const result = [];
+        items.forEach((item, i) => {
+          const rand = symbols[Math.floor(Math.random() * symbols.length)];
+          item.innerText = rand;
+          item.style.transform = 'rotateX(0deg)';
+          result.push(rand);
+        });
+
+        // Check wins
+        let win = 0;
+        const lines = [
+          [0,1,2], [3,4,5], [6,7,8], // Rows
+          [0,3,6], [1,4,7], [2,5,8], // Cols
+          [0,4,8], [2,4,6] // Diagonals
+        ];
+
+               lines.forEach(line => {
+          const s = line.map(i => result[i]);
+          if (s[0] === s[1] && s[1] === s[2]) {
+            if (s[0] === '💎') win += bet * 100; // Jackpot
+            else if (s[0] === '7️⃣') win += bet * 50; // Mini
+            else if (s[0] === '🔔') win += bet * 20; // Major
+            else if (s[0] === '⭐') win += bet * 10; // Scatter
+            else win += bet * 5; // Normal
+          }
+        });
+
+        // Scatter bonus - star 3+ anywhere
+        const starCount = result.filter(s => s === '⭐').length;
+        if (starCount >= 3) {
+          win += bet * starCount * 2;
+        }
+
+        if (win > 0) {
+          document.getElementById('slot3x3Win').innerText = `🎉 WIN ${win} 🪙!`;
+          updateDoc(doc(db, "users", auth.currentUser.uid), {
+            coins: increment(win),
+            weeklyCoins: increment(win),
+            monthlyCoins: increment(win)
+          });
+        } else {
+          document.getElementById('slot3x3Win').innerText = 'Try again!';
+        }
+      }, 500);
+    }
+
+    // 28. RUMMY & LUDO PLACEHOLDER
+    // Note: Real multiplayer game chu Socket.io/Firebase Realtime nen a ngai
+    // Hei hi UI demo chauh - game logic tak chu server side a ngai
+
+    window.joinRummy = async () => {
+      alert('Rummy Game\n\nFeature la siam mek:\n- 8 players max\n- Real-time cards\n- Turn-based\n- Coins bet\n\nWebSocket server a ngai tak tak atan');
+    }
+
+    window.joinLudo = async () => {
+      alert('Ludo Game\n\nFeature la siam mek:\n- 2-4 players\n- Dice roll\n- Token move\n- Coins bet\n\nCanvas/WebGL a ngai tak tak atan');
+    }
+
+    // 29. BATTLE CHAT REALTIME
+    function initBattle() {
+      // Battle ID siam or join
+      if (!currentBattleId) {
+        currentBattleId = 'battle_' + Date.now();
+      }
+      listenBattleChat();
+    }
+
+    // 30. CLOSE MODALS ON OUTSIDE CLICK
+    window.onclick = (event) => {
+      if (event.target.classList.contains('modal')) {
+        event.target.classList.add('hidden');
+      }
+    }
+
+  </script>
+
 </body>
 </html>
