@@ -690,15 +690,27 @@
     import { getFirestore, doc, setDoc, getDoc, updateDoc, increment, onSnapshot, collection, query, where, getDocs, orderBy, limit, addDoc, serverTimestamp, arrayUnion, arrayRemove, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    // 1. FIREBASE CONFIG - I TA NEN THLAK RAWH
-    const firebaseConfig = {
-      apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXX",
-      authDomain: "live-battle-social.firebaseapp.com",
-      projectId: "live-battle-social",
-      storageBucket: "live-battle-social.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef123456"
-    };
+   // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCcL9jbW7shc9CTJpUvAuuXyjpxwhdanlo",
+  authDomain: "live-battle-social.firebaseapp.com",
+  projectId: "live-battle-social",
+  storageBucket: "live-battle-social.firebasestorage.app",
+  messagingSenderId: "792106703995",
+  appId: "1:792106703995:web:191735b9e33b47f2dd96de",
+  measurementId: "G-Q7PT9S0Y9F"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
